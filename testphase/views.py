@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
-from .forms import VehicleForm
 from .models import Vehicle
 
 
@@ -9,17 +8,19 @@ from .models import Vehicle
 def index(request):
     context = {}
     if request.method == "GET":
-        vehicle_form = VehicleForm()
-        context["vehicle_form"] = vehicle_form
-        return render(request, "add_vehicle.html", context)
+        return render(request, "add_vehicle.html")
     elif request.method == "POST":
-        vehicle_form = VehicleForm(request.POST)
-        if vehicle_form.is_valid():
-            vehicle_form.save()
-            messages.success(request, "Vehicle Added")
+        vehicle_number = request.POST["vehicle_number"]
+        vehicle_brand = request.POST["vehicle_brand"]
+        vehicle_model = request.POST["vehicle_model"]
+        print(request.POST["add_search_radio"])
+        vehicle_exists = Vehicle.objects.filter(vehicle_no=vehicle_number)
+        if vehicle_exists:
+            messages.error(request, "Vehicle Already Exists")
             return redirect("home")
         else:
-            messages.error(request, "Vehicle Number already exists")
+            vehicle = Vehicle(vehicle_no=vehicle_number, brand=vehicle_brand, model=vehicle_model)
+            vehicle.save()
             return redirect("home")
 
 
