@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Search Vehicle
+{% endblock %}
+{% block content %}
+    <h1>Search Vehicle</h1>
+    {% for message in messages %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="vehicle_number_field">Search Vehicle</label>
+            <input type="text" class="form-control" id="vehicle_number_field"
+                   placeholder="Enter Vehicle Number" name="vehicle_number_field">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <div>
+        {% for foo in vehicle_detail %}
+            <p>{{ foo.vehicle_no }}</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}
