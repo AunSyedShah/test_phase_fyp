@@ -61,3 +61,15 @@ def index(request):
 def delete_service(request, serviceid):
     Services.objects.get(serviceID=serviceid).delete()
     return redirect("home")
+
+
+def add_service(request, vehicle_number):
+    if request.method == "POST":
+        vehicle_object = Vehicle.objects.get(vehicle_no=vehicle_number)
+        service_id = request.POST["service_id"]
+        service_type = request.POST["service_type"]
+        service_object = Services(serviceID=service_id, type=service_type, vehicle_no=vehicle_object)
+        service_object.save()
+        messages.success(request, f"service: {service_type} with service ID {service_id} created successfully")
+        return redirect("home")
+    return render(request, "add_service_detail.html")

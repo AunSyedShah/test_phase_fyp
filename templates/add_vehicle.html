@@ -64,6 +64,16 @@
             {% endif %}
         </form>
     </div>
+    <div class="my-2">
+        {% if not vehicle_details %}
+            <button type="submit" class="btn btn-primary" name="add_service_button" disabled>Add Service Details
+            </button>
+            {% else %}
+            {% for vehicle_detail in vehicle_details %}
+            <a href="{% url 'add_service' vehicle_detail.vehicle_no %}" class="btn btn-primary" role="button">Add Service Detail</a>
+            {% endfor %}
+        {% endif %}
+    </div>
     <div>
         <table class="table table-hover">
             <thead>
