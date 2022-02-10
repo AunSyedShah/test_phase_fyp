@@ -23,7 +23,7 @@ def index(request):
                 vehicle.save()
                 return redirect("home")
         elif "search_button" in request.POST:
-            vehicle_number = request.POST["vehicle_number_search"]
+            vehicle_number = request.POST["vehicle_number"]
             vehicle_details = Vehicle.objects.filter(vehicle_no=vehicle_number)
             context["vehicle_details"] = vehicle_details
             return render(request, "add_vehicle.html", context)
