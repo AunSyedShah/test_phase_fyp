@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
-from .models import Vehicle
+from .models import Vehicle, Services
 
 
 # Create your views here.
@@ -30,11 +30,16 @@ def index(request):
                 return redirect("home")
         elif "search_button" in request.POST:
             vehicle_number = request.POST["vehicle_number"]
+            if vehicle_number == "":
+                messages.error(request, "Vehicle Number field can not be empty")
+                return redirect("home")
             vehicle_details = Vehicle.objects.filter(vehicle_no=vehicle_number)
             if not vehicle_details:
                 messages.error(request, "no vehicle found with the provided Vehicle Number")
                 return redirect("home")
             context["vehicle_details"] = vehicle_details
+            services_details = Services.objects.filter(vehicle_no=vehicle_number)
+            context["services_details"] = services_details
             return render(request, "add_vehicle.html", context)
         elif "update_button" in request.POST:
             vehicle_number = request.POST["vehicle_number"]
@@ -51,3 +56,8 @@ def index(request):
             Vehicle.objects.get(vehicle_no=vehicle_number).delete()
             messages.success(request, "record deleted successfully")
             return redirect("home")
+
+
+def delete_service(request, serviceid):
+    Services.objects.get(serviceID=serviceid).delete()
+    return redirect("home")
