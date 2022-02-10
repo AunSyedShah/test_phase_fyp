@@ -36,6 +36,10 @@
                         <input type="text" class="form-control" id="vehicle_model" placeholder="Enter Vehicle Model"
                                name="vehicle_model" value="{{ vehicle_detail.model }}">
                     </div>
+                    <button type="submit" class="btn btn-primary" name="add_button">Add</button>
+                    <button type="submit" class="btn btn-primary" name="update_button">Update</button>
+                    <button type="submit" class="btn btn-primary" name="delete_button">Delete</button>
+                    <button type="submit" class="btn btn-primary" name="search_button">Search</button>
                 {% endfor %}
             {% else %}
                 <div class="form-group">
@@ -53,10 +57,11 @@
                     <input type="text" class="form-control" id="vehicle_model" placeholder="Enter Vehicle Model"
                            name="vehicle_model">
                 </div>
+                <button type="submit" class="btn btn-primary" name="add_button">Add</button>
+                <button type="submit" class="btn btn-primary" name="update_button" disabled>Update</button>
+                <button type="submit" class="btn btn-primary" name="delete_button" disabled>Delete</button>
+                <button type="submit" class="btn btn-primary" name="search_button">Search</button>
             {% endif %}
-            <button type="submit" class="btn btn-primary" name="add_button">Add</button>
-            <button type="submit" class="btn btn-primary" name="update_button">Update</button>
-            <button type="submit" class="btn btn-primary" name="search_button">Search</button>
         </form>
     </div>
 {% endblock %}
