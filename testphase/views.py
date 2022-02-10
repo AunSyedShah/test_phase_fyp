@@ -27,3 +27,12 @@ def index(request):
             vehicle_details = Vehicle.objects.filter(vehicle_no=vehicle_number)
             context["vehicle_details"] = vehicle_details
             return render(request, "add_vehicle.html", context)
+        elif "update_button" in request.POST:
+            vehicle_number = request.POST["vehicle_number"]
+            vehicle_brand = request.POST["vehicle_brand"]
+            vehicle_model = request.POST["vehicle_model"]
+            vehicle_object_update = Vehicle.objects.get(vehicle_no=vehicle_number)
+            vehicle_object_update.brand = vehicle_brand
+            vehicle_object_update.model = vehicle_model
+            vehicle_object_update.save()
+            return redirect("home")
