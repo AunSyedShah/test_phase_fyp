@@ -47,10 +47,10 @@
         </form>
     </div>
     <div>
+
     {% for vehicle_detail in vehicle_details %}
         <p>{{ vehicle_detail }}</p>
-
+        <p>{{ vehicle_detail.brand }}</p>
     {% endfor %}
-
     </div>
 {% endblock %}
