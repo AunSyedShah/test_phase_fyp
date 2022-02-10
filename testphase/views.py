@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from .models import Vehicle, Services
@@ -68,6 +69,10 @@ def add_service(request, vehicle_number):
         vehicle_object = Vehicle.objects.get(vehicle_no=vehicle_number)
         service_id = request.POST["service_id"]
         service_type = request.POST["service_type"]
+        service_object = Services.objects.filter(serviceID=service_id)
+        if service_object:
+            messages.error(request, "service with provided id already exists")
+            return HttpResponseRedirect(request.path_info)
         service_object = Services(serviceID=service_id, type=service_type, vehicle_no=vehicle_object)
         service_object.save()
         messages.success(request, f"service: {service_type} with service ID {service_id} created successfully")

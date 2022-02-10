@@ -6,6 +6,14 @@
 {% endblock %}
 {% block content %}
     <h1>Add Service Details</h1>
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
     <form action="" method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -14,7 +22,7 @@
                    name="service_id" required>
         </div>
         <div class="form-group">
-            <label for="service_type">Service ID</label>
+            <label for="service_type">Service Type</label>
             <input type="text" class="form-control" id="service_type" placeholder="Enter Service Type"
                    name="service_type" required>
         </div>
