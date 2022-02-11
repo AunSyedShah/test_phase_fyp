@@ -89,7 +89,7 @@
                 <tr>
                     <td>{{ services_detail.serviceID }}</td>
                     <td>{{ services_detail.type }}</td>
-                    <td>Update</td>
+                    <td><a href="{% url 'update_service' services_detail.serviceID %}" class="btn btn-info" role="button">Update</a></td>
                     <td><a href="{% url 'delete_service' services_detail.serviceID %}" class="btn btn-danger" role="button">Delete</a></td>
                 </tr>
             {% endfor %}

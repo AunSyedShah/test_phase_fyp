@@ -78,3 +78,20 @@ def add_service(request, vehicle_number):
         messages.success(request, f"service: {service_type} with service ID {service_id} created successfully")
         return redirect("home")
     return render(request, "add_service_detail.html")
+
+
+def update_service(request, service_id):
+    context = {
+
+    }
+    if request.method == "POST":
+        service_type = request.POST["service_type"]
+        service_object = Services.objects.get(serviceID=service_id)
+        service_object.type = service_type
+        service_object.save()
+        return redirect("home")
+    if request.method == "GET":
+        service_object = Services.objects.get(serviceID=service_id)
+        service_type = service_object.type
+        context["service_type"] = service_type
+    return render(request, "update_service_detail.html", context)
