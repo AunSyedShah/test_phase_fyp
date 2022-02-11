@@ -76,7 +76,7 @@ def add_service(request, vehicle_number):
         service_object = Services(serviceID=service_id, type=service_type, vehicle_no=vehicle_object)
         service_object.save()
         messages.success(request, f"service: {service_type} with service ID {service_id} created successfully")
-        return redirect("home")
+        return HttpResponseRedirect(request.path_info)
     return render(request, "add_service_detail.html")
 
 
