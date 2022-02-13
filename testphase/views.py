@@ -71,7 +71,7 @@ def add_service(request, vehicle_number):
         service_type = request.POST["service_type"]
         service_object = Services.objects.filter(serviceID=service_id)
         if service_object:
-            messages.error(request, "service with provided id already exists")
+            messages.error(request, "service id is already associated with this or some other vehicle")
             return HttpResponseRedirect(request.path_info)
         service_object = Services(serviceID=service_id, type=service_type, vehicle_no=vehicle_object)
         service_object.save()
