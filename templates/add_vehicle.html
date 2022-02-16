@@ -6,6 +6,11 @@
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">
+        $("#reset-form").click(
+            function (e) {
+                $("#vehicle_number").prop("readonly", false);
+            }
+        )
         $("#search_button").click(
             function (e) {
                 e.preventDefault();
@@ -20,13 +25,13 @@
                         function (res) {
                             console.log(res.data);
                             const response_data = res.data;
-                            const vehicle_number = response_data.vehicle_number;
                             const vehicle_brand = response_data.brand;
                             const vehicle_model = response_data.model;
-                            //$("#vehicle_number").val(res.data.brand);
                             $("#vehicle_number").prop("readonly", true);
-                            $("#vehicle_brand").val(res.data.brand);
-                            $("#vehicle_model").val(res.data.model);
+                            $("#update_button").prop("disabled", false);
+                            $("#delete_button").prop("disabled", false);
+                            $("#vehicle_brand").val(vehicle_brand);
+                            $("#vehicle_model").val(vehicle_model);
                         }
                     ).catch(
                         function (errors) {
@@ -43,7 +48,8 @@
 {% endblock %}
 {% block content %}
     <h1>Vehicle Details</h1>
-    {% for message in messages %}
+    <div id="message-div">
+        {% for message in messages %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -51,6 +57,7 @@
             </button>
         </div>
     {% endfor %}
+    </div>
     <div>
         <form method="post" action="" id="vehicle-add-form">
             {% csrf_token %}
@@ -70,11 +77,14 @@
                        name="vehicle_model">
             </div>
             <button type="submit" class="btn btn-primary" name="add_button">Add</button>
-            <button type="submit" class="btn btn-primary" name="update_button" disabled>Update</button>
-            <button type="submit" class="btn btn-primary" name="delete_button" disabled>Delete</button>
+            <button type="submit" class="btn btn-primary" id="update_button" disabled>Update</button>
+            <button type="submit" class="btn btn-primary" id="delete_button" disabled>Delete</button>
             <button type="button" class="btn btn-primary" name="search_button" id="search_button">Search</button>
+            <button type="reset" class="btn btn-primary" id="reset-form">Reset</button>
         </form>
     </div>
+
+
     <div class="my-2">
         {% if not vehicle_details %}
             <button type="submit" class="btn btn-primary" name="add_service_button" disabled>Add Service Details
