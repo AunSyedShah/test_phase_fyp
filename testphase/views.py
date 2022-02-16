@@ -1,7 +1,6 @@
 from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Vehicle, Services
 
@@ -99,15 +98,15 @@ def update_service(request, service_id):
 
 
 def search_vehicle(request):
-    if request.method == "GET":
-        print(request.GET.get("name"))
-        return JsonResponse({"data": "data"})
     if request.method == "POST":
         vehicle_number = request.POST.get("vehicle_number")
-        vehicle_object = Vehicle.objects.get(pk=vehicle_number)
-        data = {
-            "vehicle_number": vehicle_object.vehicle_no,
-            "model": vehicle_object.model,
-            "brand": vehicle_object.brand
-        }
-        return JsonResponse(data)
+        vehicle_object = get_object_or_404(Vehicle, pk=vehicle_number)
+        if vehicle_object:
+            data = {
+                "vehicle_number": vehicle_object.vehicle_no,
+                "model": vehicle_object.model,
+                "brand": vehicle_object.brand
+            }
+            return JsonResponse(data)
+        else:
+            return JsonResponse({"message": "no vehicle exists with provided id"}, status=404)

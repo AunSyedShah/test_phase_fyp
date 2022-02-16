@@ -17,17 +17,25 @@
                     data.append("vehicle_number", vehicle_number);
                     data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
                     axios.post('search/', data).then(
-                        function(res){
+                        function (res) {
                             console.log(res.data);
-                            const vehicle_object = res.data;
-                            console.log(vehicle_object.brand);
+                            const response_data = res.data;
+                            const vehicle_number = response_data.vehicle_number;
+                            const vehicle_brand = response_data.brand;
+                            const vehicle_model = response_data.model;
+                            //$("#vehicle_number").val(res.data.brand);
+                            $("#vehicle_number").prop("readonly", true);
+                            $("#vehicle_brand").val(res.data.brand);
+                            $("#vehicle_model").val(res.data.model);
                         }
-                ).
-                    catch(
-                        errors => console.log(errors)
-                )
-                    console.log(`search button clicked and vehicle number: ${vehicle_number}`);
-                    console.log('{{ csrf_token }}');
+                    ).catch(
+                        function (errors) {
+                            console.log(errors)
+                            if (errors.response.status === 404) {
+                                alert("no vehicle found against provided vehicle number");
+                            }
+                        }
+                    )
                 }
             }
         )
