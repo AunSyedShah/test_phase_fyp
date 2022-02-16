@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from .models import Vehicle, Services
@@ -95,3 +96,18 @@ def update_service(request, service_id):
         service_type = service_object.type
         context["service_type"] = service_type
     return render(request, "update_service_detail.html", context)
+
+
+def search_vehicle(request):
+    if request.method == "GET":
+        print(request.GET.get("name"))
+        return JsonResponse({"data": "data"})
+    if request.method == "POST":
+        vehicle_number = request.POST.get("vehicle_number")
+        vehicle_object = Vehicle.objects.get(pk=vehicle_number)
+        data = {
+            "vehicle_number": vehicle_object.vehicle_no,
+            "model": vehicle_object.model,
+            "brand": vehicle_object.brand
+        }
+        return JsonResponse(data)
