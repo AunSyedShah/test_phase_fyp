@@ -11,6 +11,24 @@
                 $("#vehicle_number").prop("readonly", false);
             }
         )
+        $("#delete_button").click(
+            function (e) {
+                console.log("delete button clicked");
+                let vehicle_number = $("#vehicle_number").val();
+                let data = new FormData();
+                data.append("vehicle_number", vehicle_number);
+                data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                axios.post('delete/', data).then(
+                    function (res) {
+                        console.log(res.data);
+                    }
+                ).catch(
+                    function (errors) {
+                        console.log(errors.data);
+                    }
+                )
+            }
+        )
         $("#search_button").click(
             function (e) {
                 e.preventDefault();
@@ -78,7 +96,7 @@
             </div>
             <button type="submit" class="btn btn-primary" name="add_button">Add</button>
             <button type="submit" class="btn btn-primary" id="update_button" disabled>Update</button>
-            <button type="submit" class="btn btn-primary" id="delete_button" disabled>Delete</button>
+            <button type="button" class="btn btn-primary" id="delete_button" disabled>Delete</button>
             <button type="button" class="btn btn-primary" name="search_button" id="search_button">Search</button>
             <button type="reset" class="btn btn-primary" id="reset-form">Reset</button>
         </form>
