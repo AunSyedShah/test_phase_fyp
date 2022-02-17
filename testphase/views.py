@@ -117,3 +117,15 @@ def delete_vehicle(request):
         if vehicle_object:
             vehicle_object.delete()
             return JsonResponse(data={"message": "vehicle deleted successfully"}, status=200)
+
+
+def update_vehicle(request):
+    if request.method == "POST":
+        vehicle_number = request.POST.get("vehicle_number")
+        vehicle_brand = request.POST.get("vehicle_brand")
+        vehicle_model = request.POST.get("vehicle_model")
+        vehicle_object = get_object_or_404(Vehicle, pk=vehicle_number)
+        vehicle_object.brand = vehicle_brand
+        vehicle_object.model = vehicle_model
+        vehicle_object.save()
+        return JsonResponse(data={"message": "vehicle details updated successfully"}, status=200)

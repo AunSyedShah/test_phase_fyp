@@ -6,6 +6,10 @@
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">
+        function reset_form() {
+            document.getElementById("vehicle-add-form").reset();
+        }
+
         $("#reset-form").click(
             function (e) {
                 $("#vehicle_number").prop("readonly", false);
@@ -21,6 +25,9 @@
                 axios.post('delete/', data).then(
                     function (res) {
                         console.log(res.data);
+                        alert("vehicle deleted successfully");
+                        $("#vehicle_number").prop("readonly", false);
+                        reset_form();
                     }
                 ).catch(
                     function (errors) {
@@ -29,6 +36,35 @@
                 )
             }
         )
+
+        $("#update_button").click(
+            function (e) {
+                console.log("update button clicked");
+                let vehicle_number = $("#vehicle_number").val();
+                let vehicle_model = $("#vehicle_model").val();
+                let vehicle_brand = $("#vehicle_brand").val();
+                let data = new FormData();
+                data.append("vehicle_number", vehicle_number);
+                data.append("vehicle_model", vehicle_model);
+                data.append("vehicle_brand", vehicle_brand);
+                data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                axios.post('update/', data).then(
+                    function (res) {
+                        console.log(res.data);
+                        alert("vehicle details updated successfully");
+                        $("#vehicle_number").prop("readonly", false);
+                        $("#update_button").prop("disabled", true);
+                        $("#delete_button").prop("disabled", true);
+                        reset_form();
+                    }
+                ).catch(
+                    function (errors) {
+                        console.log(errors.data);
+                    }
+                )
+            }
+        )
+
         $("#search_button").click(
             function (e) {
                 e.preventDefault();
@@ -55,6 +91,7 @@
                         function (errors) {
                             console.log(errors)
                             if (errors.response.status === 404) {
+                                reset_form();
                                 alert("no vehicle found against provided vehicle number");
                             }
                         }
@@ -94,8 +131,8 @@
                 <input type="text" class="form-control" id="vehicle_model" placeholder="Enter Vehicle Model"
                        name="vehicle_model">
             </div>
-            <button type="submit" class="btn btn-primary" name="add_button">Add</button>
-            <button type="submit" class="btn btn-primary" id="update_button" disabled>Update</button>
+            <button type="button" class="btn btn-primary" id="add_vehicle">Add</button>
+            <button type="button" class="btn btn-primary" id="update_button" disabled>Update</button>
             <button type="button" class="btn btn-primary" id="delete_button" disabled>Delete</button>
             <button type="button" class="btn btn-primary" name="search_button" id="search_button">Search</button>
             <button type="reset" class="btn btn-primary" id="reset-form">Reset</button>
