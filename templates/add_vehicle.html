@@ -27,6 +27,8 @@
                         console.log(res.data);
                         alert("vehicle deleted successfully");
                         $("#vehicle_number").prop("readonly", false);
+                        $("#update_button").prop("disabled", true);
+                        $("#delete_button").prop("disabled", true);
                         reset_form();
                     }
                 ).catch(
@@ -62,6 +64,40 @@
                         console.log(errors.data);
                     }
                 )
+            }
+        )
+
+        $("#add_vehicle").click(
+            function (e) {
+                console.log("add vehicle button clicked");
+                let vehicle_number = $("#vehicle_number").val();
+                let vehicle_model = $("#vehicle_model").val();
+                let vehicle_brand = $("#vehicle_brand").val();
+                if (vehicle_number === "" || vehicle_model === "" || vehicle_brand === "") {
+                    alert("please fill all the fields");
+                } else {
+                    let data = new FormData();
+                    data.append("vehicle_number", vehicle_number);
+                    data.append("vehicle_model", vehicle_model);
+                    data.append("vehicle_brand", vehicle_brand);
+                    data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                    axios.post('add/', data).then(
+                        function (res) {
+                            if (res.status === 200) {
+                                alert("vehicle added successfully");
+                                reset_form();
+                            }
+                        }
+                    ).catch(
+                        function (errors) {
+                            if (errors.response.status === 409) {
+                                console.log("vehicle already exists");
+                                alert("vehicle already exists");
+                                reset_form();
+                            }
+                        }
+                    )
+                }
             }
         )
 

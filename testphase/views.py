@@ -129,3 +129,14 @@ def update_vehicle(request):
         vehicle_object.model = vehicle_model
         vehicle_object.save()
         return JsonResponse(data={"message": "vehicle details updated successfully"}, status=200)
+
+
+def add_vehicle(request):
+    if request.method == "POST":
+        vehicle_number = request.POST.get("vehicle_number")
+        vehicle_brand = request.POST.get("vehicle_brand")
+        vehicle_model = request.POST.get("vehicle_model")
+        if Vehicle.objects.filter(vehicle_no=vehicle_number):
+            return JsonResponse(data={"message": "vehicle already exists", "status": 409}, status=409)
+        Vehicle.objects.create(vehicle_no=vehicle_number, brand=vehicle_brand, model=vehicle_model).save()
+        return JsonResponse(data={"message": "vehicle added successfully"}, status=200)
