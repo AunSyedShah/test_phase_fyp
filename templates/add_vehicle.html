@@ -16,7 +16,7 @@
     {% endfor %}
     <div>
         <form method="post" action="">
-            {% csrf_token %}
+                {% csrf_token %}
             {% if vehicle_details %}
                 {% for vehicle_detail in vehicle_details %}
 
