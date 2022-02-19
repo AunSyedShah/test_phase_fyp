@@ -140,3 +140,15 @@ def add_vehicle(request):
             return JsonResponse(data={"message": "vehicle already exists", "status": 409}, status=409)
         Vehicle.objects.create(vehicle_no=vehicle_number, brand=vehicle_brand, model=vehicle_model).save()
         return JsonResponse(data={"message": "vehicle added successfully"}, status=200)
+
+
+def add_service_detail(request):
+    if request.method == "POST":
+        service_id = request.POST.get("service_id")
+        service_type = request.POST.get("service_type")
+        vehicle_number = request.POST.get("vehicle_number")
+        if Services.objects.filter(serviceID=service_id):
+            return JsonResponse(data={"message": "service already exists"}, status=409)
+        vehicle_object = Vehicle.objects.get(pk=vehicle_number)
+        Services.objects.create(serviceID=service_id, type=service_type, vehicle_no=vehicle_object)
+        return JsonResponse(data={"status": 200}, status=200)
