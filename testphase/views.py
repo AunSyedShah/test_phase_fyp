@@ -155,5 +155,12 @@ def add_service_detail(request):
 
 
 def get_vehicle_details(request):
+    if request.method == "POST":
+        services = Services.objects.filter(vehicle_no=request.POST.get("vehicle_number")).values("serviceID", "type")
+        return JsonResponse(data={"services": list(services)})
+
+
+def delete_vehicle_details(request, service_id):
     if request.method == "GET":
-        return JsonResponse(data={"status": 200})
+        Services.objects.get(pk=service_id).delete()
+        return JsonResponse(data={}, status=200)

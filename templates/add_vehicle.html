@@ -6,10 +6,66 @@
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">
+        const update_ui = (service_id) => {
+
+        }
+        const delete_vehicle_service = (service_id) => {
+            axios.get(`delete-service/${service_id}`).then(
+                function (res) {
+                    console.log(res.data);
+                    getVehicleDetails();
+                }
+            )
+            console.log("Delete clicked");
+        }
+        const getVehicleDetails = () => {
+            let vehicle_number = $("#vehicle_number").val();
+            let data = new FormData();
+            data.append("vehicle_number", vehicle_number);
+            data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+            axios.post("get-services/", data).then(
+                function (res) {
+                    console.log(res.data);
+                    const services_array = res.data.services;
+                    $("#dynamic-service").empty();
+                    if (services_array.length > 0) {
+                        services_array.map(
+                            function (item) {
+                                $("#dynamic-service").append(
+                                    `<tr id="detail-${item.serviceID}">
+                                            <td id="${item.serviceID}">${item.serviceID}</td>
+                                            <td>${item.type}</td>
+                                            <td><button type="button" class="btn btn-info" onclick="update_ui(${item.serviceID})">Update</button></td>
+                                            <td><button class="btn btn-danger" onclick="delete_vehicle_service(${item.serviceID})">Delete</button></td>
+                                     </tr>`
+                                )
+                            }
+                        )
+                    } else {
+                        $("#dynamic-service").append(
+                            `<tr>
+                                            <td colspan="4">
+                                                <div class="alert alert-warning" role="alert">
+                                                  No services was added for this vehicle
+                                                </div>
+                                            </td>
+                                         </tr>`
+                        )
+                    }
+                }
+            ).catch(
+                function (errors) {
+                    console.log(errors.data);
+                }
+            )
+        }
+
         function reset_form() {
             document.getElementById("vehicle-add-form").reset();
             $("#add-services-form").trigger("reset");
             $("#dynamic-form").hide();
+            $("#dynamic-service").empty();
+            $("#add_service_button").prop("disabled", true);
         }
 
         $("#reset-form").click(
@@ -136,16 +192,8 @@
                             }
                         }
                     )
+                    getVehicleDetails();
                 }
-                axios.get("get-services/").then(
-                    function (res) {
-                        console.log(res.data);
-                    }
-                ).catch(
-                    function (errors) {
-                        console.log(errors);
-                    }
-                )
             }
         )
 
@@ -168,6 +216,7 @@
                             if (res.status === 200) {
                                 alert("service details added successfully");
                                 $("#add-services-form").trigger("reset");
+                                getVehicleDetails();
                             }
                         }
                     ).catch(
@@ -181,8 +230,6 @@
                 }
             }
         )
-
-
         // show details form
         $("#add_service_button").click(
             function () {
@@ -263,15 +310,8 @@
                 <th scope="col">Delete</th>
             </tr>
             </thead>
-            <tbody>
-            {% for services_detail in services_details %}
-                <tr>
-                    <td>{{ services_detail.serviceID }}</td>
-                    <td>{{ services_detail.type }}</td>
-                    <td><a href="{% url 'update_service' services_detail.serviceID %}" class="btn btn-info" role="button">Update</a></td>
-                    <td><a href="{% url 'delete_service' services_detail.serviceID %}" class="btn btn-danger" role="button">Delete</a></td>
-                </tr>
-            {% endfor %}
+            <tbody id="dynamic-service">
+
             </tbody>
         </table>
     </div>
