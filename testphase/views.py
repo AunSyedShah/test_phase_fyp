@@ -152,3 +152,8 @@ def add_service_detail(request):
         vehicle_object = Vehicle.objects.get(pk=vehicle_number)
         Services.objects.create(serviceID=service_id, type=service_type, vehicle_no=vehicle_object)
         return JsonResponse(data={"status": 200}, status=200)
+
+
+def get_vehicle_details(request):
+    if request.method == "GET":
+        return JsonResponse(data={"status": 200})

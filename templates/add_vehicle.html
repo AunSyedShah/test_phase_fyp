@@ -137,6 +137,15 @@
                         }
                     )
                 }
+                axios.get("get-services/").then(
+                    function (res) {
+                        console.log(res.data);
+                    }
+                ).catch(
+                    function (errors) {
+                        console.log(errors);
+                    }
+                )
             }
         )
 
@@ -173,11 +182,7 @@
             }
         )
 
-        $(document).ready(
-            function () {
-                $("#dynamic-form").hide();
-            }
-        )
+
         // show details form
         $("#add_service_button").click(
             function () {
@@ -223,7 +228,7 @@
             <button type="reset" class="btn btn-primary" id="reset-form">Reset</button>
         </form>
     </div>
-    <div id="dynamic-form">
+    <div id="dynamic-form" style="display: none">
         <form id="add-services-form">
             {% csrf_token %}
             <div class="form-group">
