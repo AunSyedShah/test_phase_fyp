@@ -8,11 +8,14 @@
     <script type="text/javascript">
         function reset_form() {
             document.getElementById("vehicle-add-form").reset();
+            $("#add-services-form").trigger("reset");
+            $("#dynamic-form").hide();
         }
 
         $("#reset-form").click(
             function (e) {
                 $("#vehicle_number").prop("readonly", false);
+                reset_form();
             }
         )
         $("#delete_button").click(
@@ -155,13 +158,14 @@
                         function (res) {
                             if (res.status === 200) {
                                 alert("service details added successfully");
+                                $("#add-services-form").trigger("reset");
                             }
                         }
                     ).catch(
                         function (errors) {
                             if (errors.response.status === 409) {
-                                console.log("vehicle already exists");
                                 alert("service already exists");
+                                $("#add-services-form").trigger("reset");
                             }
                         }
                     )
@@ -220,14 +224,14 @@
         </form>
     </div>
     <div id="dynamic-form">
-        <form>
+        <form id="add-services-form">
             {% csrf_token %}
             <div class="form-group">
                 <label for="service_id">Service ID</label>
                 <input type="text" class="form-control" id="service_id" placeholder="Enter Service ID">
             </div>
             <div class="form-group">
-                <label for="service_type">Service ID</label>
+                <label for="service_type">Service Type</label>
                 <input type="text" class="form-control" id="service_type" placeholder="Enter Service Type">
             </div>
             <button type="button" class="btn btn-primary" id="add-service">Add Service</button>
