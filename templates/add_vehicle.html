@@ -6,9 +6,26 @@
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">
-        const update_ui = (service_id) => {
+        const update_service = (service_id)=>{
 
-        }
+    }
+    const update_ui = (service_id) => {
+        console.log("clicked ui");
+        $(`#detail-${service_id}`).empty();
+        $(`#detail-${service_id}`).append(
+            `
+            <div>
+                <form>
+                    <div class="form-group">
+                        <label for="service_type_${service_id}">Service Type</label>
+                    <input type="text" class="form-control" id="service_type_${service_id}">
+                    </div>
+                        <button type="button" class="btn btn-primary" onclick="update_service">Update</button>
+                </form>
+            </div>
+                `
+        )
+    }
         const delete_vehicle_service = (service_id) => {
             axios.get(`delete-service/${service_id}`).then(
                 function (res) {
