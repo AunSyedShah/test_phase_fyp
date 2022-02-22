@@ -222,6 +222,7 @@
                             $("#vehicle_brand").val(vehicle_brand);
                             $("#vehicle_model").val(vehicle_model);
                             $("#add_service_button").prop("disabled", false);
+                            getVehicleDetails();
                         }
                     ).catch(
                         function (errors) {
@@ -232,7 +233,7 @@
                             }
                         }
                     )
-                    getVehicleDetails();
+
                 }
             }
         )
