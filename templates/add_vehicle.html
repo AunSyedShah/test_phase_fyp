@@ -8,7 +8,30 @@
     <script type="text/javascript">
         const update_service = (service_id)=>{
 
-    }
+                let service_type_form = $(`#service_type_${service_id}`).val();
+                if(service_type_form === ""){
+                alert("please fill the field");
+                }
+                else {
+                    let data = new FormData();
+                    data.append("service_id", service_id);
+                    data.append("service_type", service_type_form);
+                    data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                    axios.post('update-service/', data).then(
+                    function (res){
+                    console.log(res);
+                    alert("service type updated successfully");
+                    getVehicleDetails();
+                    }
+                        ).catch(
+                        function (errors){
+                        console.log(errors);
+                        }
+                            )
+                }
+
+}
+
     const update_ui = (service_id) => {
         console.log("clicked ui");
         $(`#detail-${service_id}`).empty();
@@ -20,7 +43,7 @@
                         <label for="service_type_${service_id}">Service Type</label>
                     <input type="text" class="form-control" id="service_type_${service_id}">
                     </div>
-                        <button type="button" class="btn btn-primary" onclick="update_service">Update</button>
+                        <button type="button" class="btn btn-primary" onclick="update_service(${service_id})">Update</button>
                 </form>
             </div>
                 `
@@ -297,7 +320,7 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="service_id">Service ID</label>
-                <input type="text" class="form-control" id="service_id" placeholder="Enter Service ID">
+                <input type="number" class="form-control" id="service_id" placeholder="Enter Service ID">
             </div>
             <div class="form-group">
                 <label for="service_type">Service Type</label>
@@ -318,7 +341,7 @@
         {% endif %}
     </div>
     <div>
-        <table class="table table-hover">
+        <table class="table">
             <thead>
             <tr>
                 <th scope="col">Service ID</th>

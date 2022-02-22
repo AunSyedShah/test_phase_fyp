@@ -164,3 +164,12 @@ def delete_vehicle_details(request, service_id):
     if request.method == "GET":
         Services.objects.get(pk=service_id).delete()
         return JsonResponse(data={}, status=200)
+
+
+def update_vehicle_detail(request):
+    if request.method == "POST":
+        service_id = request.POST.get("service_id")
+        service_object = Services.objects.get(pk=service_id)
+        service_object.type = request.POST.get("service_type")
+        service_object.save()
+        return JsonResponse(data={}, status=200)

@@ -14,4 +14,5 @@ urlpatterns = [
     path('add-service/', views.add_service_detail, name="add_service_detail"),
     path('get-services/', views.get_vehicle_details, name="get-services"),
     path('delete-service/<service_id>', views.delete_vehicle_details, name="delete-service"),
+    path('update-service/', views.update_vehicle_detail, name="update-service"),
 ]
