@@ -144,6 +144,10 @@
                 let vehicle_number = $("#vehicle_number").val();
                 let vehicle_model = $("#vehicle_model").val();
                 let vehicle_brand = $("#vehicle_brand").val();
+                if(vehicle_number === "" || vehicle_model === "" || vehicle_brand === ""){
+                alert("please fill all the fields");
+                }
+                else {
                 let data = new FormData();
                 data.append("vehicle_number", vehicle_number);
                 data.append("vehicle_model", vehicle_model);
@@ -163,7 +167,10 @@
                         console.log(errors.data);
                     }
                 )
+                }
+
             }
+
         )
 
         $("#add_vehicle").click(
