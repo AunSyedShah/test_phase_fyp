@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Vehicle Details
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        const update_service = (service_id)=>{
+
+                let service_type_form = $(`#service_type_${service_id}`).val();
+                if(service_type_form === ""){
+                alert("please fill the field");
+                }
+                else {
+                    let data = new FormData();
+                    data.append("service_id", service_id);
+                    data.append("service_type", service_type_form);
+                    data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                    axios.post('update-service/', data).then(
+                    function (res){
+                    console.log(res);
+                    alert("service type updated successfully");
+                    getVehicleDetails();
+                    }
+                        ).catch(
+                        function (errors){
+                        console.log(errors);
+                        }
+                            )
+                }
+
+}
+
+    const update_ui = (service_id) => {
+        console.log("clicked ui");
+        $(`#detail-${service_id}`).empty();
+        $(`#detail-${service_id}`).append(
+            `
+            <div>
+                <form>
+                    <div class="form-group">
+                        <label for="service_type_${service_id}">Service Type</label>
+                    <input type="text" class="form-control" id="service_type_${service_id}">
+                    </div>
+                        <button type="button" class="btn btn-primary" onclick="update_service(${service_id})">Update</button>
+                </form>
+            </div>
+                `
+        )
+    }
+        const delete_vehicle_service = (service_id) => {
+            axios.get(`delete-service/${service_id}`).then(
+                function (res) {
+                    console.log(res.data);
+                    getVehicleDetails();
+                }
+            )
+            console.log("Delete clicked");
+        }
+        const getVehicleDetails = () => {
+            let vehicle_number = $("#vehicle_number").val();
+            let data = new FormData();
+            data.append("vehicle_number", vehicle_number);
+            data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+            axios.post("get-services/", data).then(
+                function (res) {
+                    console.log(res.data);
+                    const services_array = res.data.services;
+                    $("#dynamic-service").empty();
+                    if (services_array.length > 0) {
+                        services_array.map(
+                            function (item) {
+                                $("#dynamic-service").append(
+                                    `<tr id="detail-${item.serviceID}">
+                                            <td id="${item.serviceID}">${item.serviceID}</td>
+                                            <td>${item.type}</td>
+                                            <td><button type="button" class="btn btn-info" onclick="update_ui(${item.serviceID})">Update</button></td>
+                                            <td><button class="btn btn-danger" onclick="delete_vehicle_service(${item.serviceID})">Delete</button></td>
+                                     </tr>`
+                                )
+                            }
+                        )
+                    } else {
+                        $("#dynamic-service").append(
+                            `<tr>
+                                            <td colspan="4">
+                                                <div class="alert alert-warning" role="alert">
+                                                  No services was added for this vehicle
+                                                </div>
+                                            </td>
+                                         </tr>`
+                        )
+                    }
+                }
+            ).catch(
+                function (errors) {
+                    console.log(errors.data);
+                }
+            )
+        }
+
+        function reset_form() {
+            document.getElementById("vehicle-add-form").reset();
+            $("#add-services-form").trigger("reset");
+            $("#dynamic-form").hide();
+            $("#dynamic-service").empty();
+            $("#add_service_button").prop("disabled", true);
+        }
+
+        $("#reset-form").click(
+            function (e) {
+                $("#vehicle_number").prop("readonly", false);
+                reset_form();
+            }
+        )
+        $("#delete_button").click(
+            function (e) {
+                console.log("delete button clicked");
+                let vehicle_number = $("#vehicle_number").val();
+                let data = new FormData();
+                data.append("vehicle_number", vehicle_number);
+                data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                axios.post('delete/', data).then(
+                    function (res) {
+                        console.log(res.data);
+                        alert("vehicle deleted successfully");
+                        $("#vehicle_number").prop("readonly", false);
+                        $("#update_button").prop("disabled", true);
+                        $("#delete_button").prop("disabled", true);
+                        reset_form();
+                    }
+                ).catch(
+                    function (errors) {
+                        console.log(errors.data);
+                    }
+                )
+            }
+        )
+
+        $("#update_button").click(
+            function (e) {
+                console.log("update button clicked");
+                let vehicle_number = $("#vehicle_number").val();
+                let vehicle_model = $("#vehicle_model").val();
+                let vehicle_brand = $("#vehicle_brand").val();
+                if(vehicle_number === "" || vehicle_model === "" || vehicle_brand === ""){
+                alert("please fill all the fields");
+                }
+                else {
+                let data = new FormData();
+                data.append("vehicle_number", vehicle_number);
+                data.append("vehicle_model", vehicle_model);
+                data.append("vehicle_brand", vehicle_brand);
+                data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                axios.post('update/', data).then(
+                    function (res) {
+                        console.log(res.data);
+                        alert("vehicle details updated successfully");
+                        $("#vehicle_number").prop("readonly", false);
+                        $("#update_button").prop("disabled", true);
+                        $("#delete_button").prop("disabled", true);
+                        reset_form();
+                    }
+                ).catch(
+                    function (errors) {
+                        console.log(errors.data);
+                    }
+                )
+                }
+
+            }
+
+        )
+
+        $("#add_vehicle").click(
+            function (e) {
+                console.log("add vehicle button clicked");
+                let vehicle_number = $("#vehicle_number").val();
+                let vehicle_model = $("#vehicle_model").val();
+                let vehicle_brand = $("#vehicle_brand").val();
+                if (vehicle_number === "" || vehicle_model === "" || vehicle_brand === "") {
+                    alert("please fill all the fields");
+                } else {
+                    let data = new FormData();
+                    data.append("vehicle_number", vehicle_number);
+                    data.append("vehicle_model", vehicle_model);
+                    data.append("vehicle_brand", vehicle_brand);
+                    data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                    axios.post('add/', data).then(
+                        function (res) {
+                            if (res.status === 200) {
+                                alert("vehicle added successfully");
+                                reset_form();
+                            }
+                        }
+                    ).catch(
+                        function (errors) {
+                            if (errors.response.status === 409) {
+                                console.log("vehicle already exists");
+                                alert("vehicle already exists");
+                                reset_form();
+                            }
+                        }
+                    )
+                }
+            }
+        )
+
+        $("#search_button").click(
+            function (e) {
+                e.preventDefault();
+                let vehicle_number = $("#vehicle_number").val();
+                if (vehicle_number === "") {
+                    alert("please enter vehicle number");
+                } else {
+                    let data = new FormData();
+                    data.append("vehicle_number", vehicle_number);
+                    data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                    axios.post('search/', data).then(
+                        function (res) {
+                            console.log(res.data);
+                            const response_data = res.data;
+                            const vehicle_brand = response_data.brand;
+                            const vehicle_model = response_data.model;
+                            $("#vehicle_number").prop("readonly", true);
+                            $("#update_button").prop("disabled", false);
+                            $("#delete_button").prop("disabled", false);
+                            $("#vehicle_brand").val(vehicle_brand);
+                            $("#vehicle_model").val(vehicle_model);
+                            $("#add_service_button").prop("disabled", false);
+                            getVehicleDetails();
+                        }
+                    ).catch(
+                        function (errors) {
+                            console.log(errors)
+                            if (errors.response.status === 404) {
+                                reset_form();
+                                alert("no vehicle found against provided vehicle number");
+                            }
+                        }
+                    )
+
+                }
+            }
+        )
+
+        $("#add-service").click(
+            () => {
+                console.log("add-service button clicked");
+                let vehicle_number = $("#vehicle_number").val();
+                const service_id = $("#service_id").val();
+                const service_type = $("#service_type").val();
+                if (service_id === "" || service_type === "") {
+                    alert("please fill all the fields");
+                } else {
+                    let data = new FormData();
+                    data.append("service_id", service_id);
+                    data.append("service_type", service_type);
+                    data.append("vehicle_number", vehicle_number);
+                    data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                    axios.post('add-service/', data).then(
+                        function (res) {
+                            if (res.status === 200) {
+                                alert("service details added successfully");
+                                $("#add-services-form").trigger("reset");
+                                getVehicleDetails();
+                            }
+                        }
+                    ).catch(
+                        function (errors) {
+                            if (errors.response.status === 409) {
+                                alert("service already exists");
+                                $("#add-services-form").trigger("reset");
+                            }
+                        }
+                    )
+                }
+            }
+        )
+        // show details form
+        $("#add_service_button").click(
+            function () {
+                $("#dynamic-form").show();
+            }
+        )
+    </script>
+{% endblock %}
+{% block content %}
+    <h1>Vehicle Details</h1>
+    <div>
+        <form method="post" action="" id="vehicle-add-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="vehicle_number">Vehicle Number</label>
+                <input type="text" class="form-control" id="vehicle_number" placeholder="Enter Vehicle Number"
+                       name="vehicle_number">
+            </div>
+            <div class="form-group">
+                <label for="vehicle_brand">Brand</label>
+                <input type="text" class="form-control" id="vehicle_brand" placeholder="Enter Vehicle Brand"
+                       name="vehicle_brand">
+            </div>
+            <div class="form-group">
+                <label for="vehicle_model">Model</label>
+                <input type="text" class="form-control" id="vehicle_model" placeholder="Enter Vehicle Model"
+                       name="vehicle_model">
+            </div>
+            <button type="button" class="btn btn-primary" id="add_vehicle">Add</button>
+            <button type="button" class="btn btn-primary" id="update_button" disabled>Update</button>
+            <button type="button" class="btn btn-primary" id="delete_button" disabled>Delete</button>
+            <button type="button" class="btn btn-primary" name="search_button" id="search_button">Search</button>
+            <button type="reset" class="btn btn-primary" id="reset-form">Reset</button>
+        </form>
+    </div>
+    <div id="dynamic-form" style="display: none">
+        <form id="add-services-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="service_id">Service ID</label>
+                <input type="number" class="form-control" id="service_id" placeholder="Enter Service ID">
+            </div>
+            <div class="form-group">
+                <label for="service_type">Service Type</label>
+                <input type="text" class="form-control" id="service_type" placeholder="Enter Service Type">
+            </div>
+            <button type="button" class="btn btn-primary" id="add-service">Add Service</button>
+        </form>
+    </div>
+    <div class="my-2">
+        {% if not vehicle_details %}
+            <button type="submit" class="btn btn-primary" name="add_service_button" id="add_service_button" disabled>Add
+                Service Details
+            </button>
+        {% else %}
+            {% for vehicle_detail in vehicle_details %}
+            <a href="{% url 'add_service' vehicle_detail.vehicle_no %}" class="btn btn-primary" role="button">Add Service Detail</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Service ID</th>
+                <th scope="col">Type</th>
+                <th scope="col">Update</th>
+                <th scope="col">Delete</th>
+            </tr>
+            </thead>
+            <tbody id="dynamic-service">
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
