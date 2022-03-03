@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 from .models import Vehicle, Services
@@ -51,7 +50,8 @@ def add_vehicle(request):
         vehicle_model = request.POST.get("vehicle_model")
         if Vehicle.objects.filter(vehicle_no=vehicle_number):
             return JsonResponse(data={"message": "vehicle already exists", "status": 409}, status=409)
-        Vehicle.objects.create(vehicle_no=vehicle_number, brand=vehicle_brand, model=vehicle_model).save()
+        Vehicle.objects.create(vehicle_no=vehicle_number,
+                               brand=vehicle_brand, model=vehicle_model).save()
         return JsonResponse(data={"message": "vehicle added successfully"}, status=200)
 
 
@@ -63,13 +63,15 @@ def add_service_detail(request):
         if Services.objects.filter(serviceID=service_id):
             return JsonResponse(data={"message": "service already exists"}, status=409)
         vehicle_object = Vehicle.objects.get(pk=vehicle_number)
-        Services.objects.create(serviceID=service_id, type=service_type, vehicle_no=vehicle_object)
+        Services.objects.create(serviceID=service_id,
+                                type=service_type, vehicle_no=vehicle_object)
         return JsonResponse(data={"status": 200}, status=200)
 
 
 def get_vehicle_details(request):
     if request.method == "POST":
-        services = Services.objects.filter(vehicle_no=request.POST.get("vehicle_number")).values("serviceID", "type")
+        services = Services.objects.filter(vehicle_no=request.POST.get(
+            "vehicle_number")).values("serviceID", "type")
         return JsonResponse(data={"services": list(services)})
 
 
